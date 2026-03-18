@@ -1,4 +1,4 @@
-;;; emacs-solo-insert.el --- Edit files as root via TRAMP  -*- lexical-binding: t; -*-
+;;; emacs-solo-tookit.el --- Edit files as root via TRAMP  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -134,4 +134,4 @@
   (global-set-key (kbd "M-n") #'delete-block-backward))
 
 (provide 'emacs-solo-tookit)
-;;; emacs-solo-sudo-edit.el ends here
+;;; emacs-solo-tookit.el ends here

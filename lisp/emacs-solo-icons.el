@@ -12,7 +12,7 @@
 ;; used by other Emacs Solo features (Dired, eshell, ibuffer).
 
 ;;; Code:
-
+(defvar emacs-solo/file-icons nil)
 (defvar emacs-solo/file-icons
   '(("el"        :nerd "" :emoji "📜")
     ("rb"        :nerd "" :emoji "💎")
