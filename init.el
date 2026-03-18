@@ -139,13 +139,14 @@ IMPORTANT NOTE: If you disable this or choose another theme, also check
   :type 'boolean
   :group 'emacs-solo)
 
-(defcustom emacs-solo-preferred-font-name "JetBrainsMono Nerd Font"
+;; (defcustom emacs-solo-preferred-font-name "JetBrainsMono Nerd Font"
+(defcustom emacs-solo-preferred-font-name "Monaco"
   "The name of the font to be used.
 Examples: `Maple Mono NF' or `JetBrainsMono Nerd Font'."
   :type 'string
   :group 'emacs-solo)
 
-(defcustom emacs-solo-preferred-font-sizes '(130 105)
+(defcustom emacs-solo-preferred-font-sizes '(130 125)
   "List of default font sizes (first for macOS, second for GNU/Linux)."
   :type '(repeat integer)
   :group 'emacs-solo)
@@ -337,12 +338,15 @@ for ESLint."
   (defun emacs-solo/setup-font ()
     (let* ((emacs-solo-have-default-font (find-font (font-spec :family emacs-solo-preferred-font-name)))
            (size (nth (if (eq system-type 'darwin) 0 1)
-                      emacs-solo-preferred-font-sizes)))
+                      emacs-solo-preferred-font-sizes))
+           (chinese-font-name  "Microsoft YaHei UI"))
       (set-face-attribute 'default nil
                           :family (when emacs-solo-have-default-font
                                     emacs-solo-preferred-font-name)
                           :height size)
-
+      (when (display-grayscale-p)
+        (dolist (charset '(kana han symbol cjk-misc bopomofo))
+          (set-fontset-font (frame-parameter nil 'font) charset (font-spec :family (eval chinese-font-name)))))
       ;; macOS specific fine-tuning
       (when (and (eq system-type 'darwin) emacs-solo-have-default-font)
         ;; Glyphs for powerline/icons
@@ -2093,7 +2097,7 @@ The completion candidates include the Git status of each file."
               (message "No modified or renamed files found.")
             (let* ((candidates target-files)
                    (selection (completing-read "Switch to buffer (Git modified): "
-                                               (mapcar #'car candidates) nil t)))
+1                                              (mapcar #'car candidates) nil t)))
               (when selection
                 (let ((file-path (cdr (assoc selection candidates))))
                   (when file-path
@@ -3475,6 +3479,8 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (require 'emacs-solo-erc-image)
 (require 'emacs-solo-yt)
 (require 'emacs-solo-gh)
+(require 'emacs-solo-tookit)
+(require 'emacs-solo-eaf-config)
 
 (provide 'init)
 ;;; └ init.el ends here
