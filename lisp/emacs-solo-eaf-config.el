@@ -1,6 +1,7 @@
 (use-package eaf
   :bind (("s-w" . my/bm)
          ("s-f" . my/fm)
+         ("s-g" . my/gm)
          ("s-b" . my/eaf-save-bookmark))
   :load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/"
   :defer t
@@ -8,8 +9,10 @@
   :config
   (add-to-list 'load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/app/browser/")
   (add-to-list 'load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/app/file-manager/")
+  (add-to-list 'load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/app/git/")
   (require 'eaf-browser)
   (require 'eaf-file-manager)
+  (require 'eaf-git)
   (defun slurp (f)
     (with-temp-buffer
       (insert-file-contents f)
@@ -49,6 +52,11 @@
   (defun my/fm ()
     (interactive)
     (eaf-open-in-file-manager))
+
+  (defun my/gm ()
+    (interactive)
+    (eaf-open-git))
+
   (setq eaf-browser-continue-where-left-off t)
   (setq eaf-browser-dnefault-search-engine "duckduckgo")
   (setq eaf-browser-enable-adblocker "true")
