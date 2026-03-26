@@ -117,6 +117,7 @@
     (interactive "*p")
     (move-text-internal (- arg)))
 
+  (global-set-key (kbd "s-s") #'er/expand-region)
   (global-set-key (kbd "C-M-y") #'up-list)
   (global-set-key (kbd "s-P") #'move-text-up)
   (global-set-key (kbd "s-N") #'move-text-down)

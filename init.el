@@ -3409,6 +3409,7 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (require 'init-rime)
 (require 'init-sort-tab)
 (require 'init-vi-navigate)
+(require 'init-expand-region)
 
 (provide 'init)
 ;;; └ init.el ends here
