@@ -70,3 +70,4 @@ saveplace
 cert.pem
 multisession/
 tmp/
+eaf/*

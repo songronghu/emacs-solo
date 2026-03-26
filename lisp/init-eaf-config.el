@@ -64,4 +64,4 @@
   (setq eaf-proxy-host "127.0.0.1")
   (setq eaf-proxy-port "18080"))
 
-(provide 'emacs-solo-eaf-config)
+(provide 'init-eaf-config)

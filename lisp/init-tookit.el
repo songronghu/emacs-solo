@@ -1,11 +1,6 @@
-;;; emacs-solo-tookit.el --- Edit files as root via TRAMP  -*- lexical-binding: t; -*-
-
-;;; Commentary:
-;;
-;;; Code:
-(use-package emacs-solo-tookit
+;;; init-tookit.el --- Edit files as root via TRAMP  -*- lexical-binding: t; -*-
+(use-package tookit
   :ensure nil
-  :no-require t
   :defer t
   :init
   (require 'subword)
@@ -133,5 +128,5 @@
   (global-set-key (kbd "M-m") #'delete-block-forward)
   (global-set-key (kbd "M-n") #'delete-block-backward))
 
-(provide 'emacs-solo-tookit)
-;;; emacs-solo-tookit.el ends here
+(provide 'init-tookit)
+;;; init-tookit.el ends here

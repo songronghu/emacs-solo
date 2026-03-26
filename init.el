@@ -2226,7 +2226,7 @@ and restart Flymake to apply the changes."
    '(gnus-thread-sort-by-most-recent-number
      gnus-thread-sort-by-subject
      (not gnus-thread-sort-by-total-score)
-     gnus-thread-sort-by-most-recent-date))
+     gnus-thread-sort-byq-most-recent-date))
   (gnus-summary-line-format "%U %R %z : %[%d%] %4{ %-34,34n%} %3{ %}%(%1{%B%}%s%)\12")
   (gnus-user-date-format-alist '((t . "%d-%m-%Y %H:%M")))
   (gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references)
@@ -3366,6 +3366,8 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 ;;  │ Each file is loaded here via `require'.
 ;;  │ See `lisp/*.el' for per-module documentation.
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
+  (normal-top-level-add-subdirs-to-load-path))
 (require 'emacs-solo-themes)
 (require 'emacs-solo-movements)
 (require 'emacs-solo-formatter)
@@ -3401,10 +3403,12 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (require 'emacs-solo-erc-image)
 (require 'emacs-solo-yt)
 (require 'emacs-solo-gh)
-(require 'emacs-solo-tookit)
-(require 'emacs-solo-eaf-config)
-(require 'emacs-solo-fingertip)
-(require 'sort-tab)
+(require 'init-tookit)
+(require 'init-eaf-config)
+(require 'init-fingertip)
+(require 'init-rime)
+(require 'init-sort-tab)
+(require 'init-vi-navigate)
 
 (provide 'init)
 ;;; └ init.el ends here

@@ -1,4 +1,4 @@
-(use-package emacs-solo-fingertip
+(use-package fingertip
   :hook ((c-mode-common . fingertip-mode)
          (c-mode-common-hook . fingertip-mode)
          (c-mode-hook . fingertip-mode)
@@ -60,7 +60,7 @@
               ("SPC" . fingertip-space)                ;智能 space
               ("RET" . fingertip-newline)              ;智能 newline
               ;; 删除
-              ("M-o" . fingertip-backward-delete) ;向后删除
+              ;; ("M-o" . fingertip-backward-delete) ;向后删除
               ("C-d" . fingertip-forward-delete)  ;向前删除
               ("C-k" . fingertip-kill)            ;向前kill
               ;; 包围
@@ -74,11 +74,7 @@
               ("M-:" . fingertip-jump-out-pair-and-newline) ;跳出括号并换行
               ;; 向父节点跳动
               ("C-j" . fingertip-jump-up))
-  :defer t
-  :init
-  :config
-  (add-to-list 'load-path "/home/ronghusong/src/github/emacs-solo/site-lisp/fingertip/")
-  (require 'fingertip))
+  :defer t)
 
-(provide 'emacs-solo-fingertip)
-;;;emacs-solo-fingertip.el ends here
+(provide 'init-fingertip)
+;;;init-fingertip.el ends here
