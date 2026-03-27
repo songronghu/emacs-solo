@@ -3403,13 +3403,16 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (require 'emacs-solo-erc-image)
 (require 'emacs-solo-yt)
 (require 'emacs-solo-gh)
+(require 'init-rime)
 (require 'init-tookit)
 (require 'init-eaf-config)
 (require 'init-fingertip)
-(require 'init-rime)
 (require 'init-sort-tab)
 (require 'init-vi-navigate)
 (require 'init-expand-region)
+(require 'init-eat)
+(require 'init-toggle-one-window)
+(require 'init-yasnippet)
 
 (provide 'init)
 ;;; └ init.el ends here
