@@ -3412,6 +3412,7 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (require 'init-expand-region)
 (require 'init-eat)
 (require 'init-toggle-one-window)
+(require 'init-consult)
 (require 'init-yasnippet)
 
 (provide 'init)

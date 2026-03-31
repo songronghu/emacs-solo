@@ -3,6 +3,8 @@
   :ensure nil
   :defer t
   :init
+  (require 'auto-save)
+  (auto-save-enable)
   (require 'subword)
   (defun open-newline-above (arg)
     "Move to the previous line (like vi) and then opens a line."
