@@ -2,6 +2,7 @@
   :bind (("s-w" . my/bm)
          ("s-f" . my/fm)
          ("s-g" . my/gm)
+         ("s-n" . my/pdf)
          ("s-b" . my/eaf-save-bookmark))
   :load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/"
   :defer t
@@ -10,9 +11,11 @@
   (add-to-list 'load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/app/browser/")
   (add-to-list 'load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/app/file-manager/")
   (add-to-list 'load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/app/git/")
+  (add-to-list 'load-path "/home/ronghusong/lazycat-emacs/site-lisp/extensions/emacs-application-framework/app/pdf-viewer/")
   (require 'eaf-browser)
   (require 'eaf-file-manager)
   (require 'eaf-git)
+  (require 'eaf-pdf-viewer)
   (defun slurp (f)
     (with-temp-buffer
       (insert-file-contents f)
@@ -57,8 +60,13 @@
     (interactive)
     (eaf-open-git))
 
+  (defun my/pdf ()
+    (interactive)
+     (let ((file (read-file-name "Open PDF: ")))
+    (eaf-open file)))
+
   (setq eaf-browser-continue-where-left-off t)
-  (setq eaf-browser-dnefault-search-engine "duckduckgo")
+  (setq eaf-browser-default-search-engine "duckduckgo")
   (setq eaf-browser-enable-adblocker "true")
   (setq eaf-proxy-type "http")
   (setq eaf-proxy-host "127.0.0.1")

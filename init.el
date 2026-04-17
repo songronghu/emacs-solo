@@ -3368,6 +3368,7 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
   (normal-top-level-add-subdirs-to-load-path))
+
 (require 'emacs-solo-themes)
 (require 'emacs-solo-movements)
 (require 'emacs-solo-formatter)
@@ -3414,6 +3415,7 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (require 'init-toggle-one-window)
 (require 'init-consult)
 (require 'init-yasnippet)
-
+(require 'init-multiple-cursor)
+(require 'init-format-all)
 (provide 'init)
 ;;; └ init.el ends here
