@@ -1,7 +1,8 @@
 (defvar my/eshell-where-file
   "/home/ronghusong/src/github/emacs-solo/eshell/.where")
 
-(defvar my/eshell-where-cache nil "内存中的路径缓存列表")
+(defvar my/eshell-where-cache '())
+(defvar my/eshell-where-dirty nil)
 
 (defun my/eshell--load-where ()
   "启动时加载一次文件。"
@@ -12,10 +13,12 @@
 
 (defun my/eshell--save-where ()
   "将缓存写入磁盘（仅在有变化时建议调用）。"
-  (let ((dir (file-name-directory my/eshell-where-file)))
-    (unless (file-directory-p dir) (make-directory dir t)))
-  (with-temp-file my/eshell-where-file
-    (insert (mapconcat #'identity my/eshell-where-cache "\n"))))
+  (when my/eshell-where-dirty
+    (setq my/eshell-where-dirty nil)
+    (let ((dir (file-name-directory my/eshell-where-file)))
+      (unless (file-directory-p dir) (make-directory dir t)))
+    (with-temp-file my/eshell-where-file
+      (insert (mapconcat #'identity my/eshell-where-cache "\n")))))
 
 (defun my/eshell--add-path (path)
   "更新缓存：排重并置顶最新路径。"
@@ -23,9 +26,10 @@
     ;; 只有当路径不在首位时才操作，减少不必要的重绘/写入
     (unless (string= abs (car my/eshell-where-cache))
       (setq my/eshell-where-cache (cons abs (delete abs my/eshell-where-cache)))
-      ;; 限制 1000 条最常用记录，保证搜索速度
-      (when (> (length my/eshell-where-cache) 1000)
-        (setcdr (nthcdr 999 my/eshell-where-cache) nil)))))
+      (setq my/eshell-where-dirty t)
+      ;; 限制 3000 条最常用记录，保证搜索速度
+      (when (> (length my/eshell-where-cache) 3000)
+        (setcdr (nthcdr 2999 my/eshell-where-cache) nil)))))
 
 (defun my/eshell--match-history (input)
   "在历史中进行关键词过滤。"
@@ -36,7 +40,7 @@
      my/eshell-where-cache)))
 
 (defun my/eshell-smart-cd (orig-fun &rest args)
-  "核心 CD 逻辑。"
+  "核心 cd 逻辑。"
   (let* ((input (string-join args " "))
          (abs-input (and (not (string-empty-p input)) (expand-file-name input))))
     (cond
@@ -56,42 +60,43 @@
      ;; 3. 无参数 cd (回主目录)
      (t (apply orig-fun args)))))
 
-;; ssh 主机补全
-(defun my/eshell-ssh-connect ()
-  "解析 ~/.ssh/config 并在 Eshell 中快速连接主机。"
+;;ssh主机列表
+(defvar my/eshell-ssh-host-cache nil)
+
+(defun my/eshell--load-ssh-hosts ()
+  (unless my/eshell-ssh-host-cache
+    (let ((ssh-config (expand-file-name "~/.ssh/config")))
+      (when (file-exists-p ssh-config)
+        (with-temp-buffer
+          (insert-file-contents ssh-config)
+          (let (res)
+            (goto-char (point-min))
+            (while (re-search-forward
+                    "^[ \t]*Host[ \t]+\\([^ \t\n\*]+\\)" nil t)
+              (push (match-string 1) res))
+            (setq my/eshell-ssh-host-cache
+                  (delete-dups (nreverse res))))))))
+  my/eshell-ssh-host-cache)
+
+(defun my/term-ssh ()
+  "用 ansi-term 连接 ssh（带补全）"
   (interactive)
-  (let* ((ssh-config (expand-file-name "~/.ssh/config"))
-         (hosts (when (file-exists-p ssh-config)
-                  (with-temp-buffer
-                    (insert-file-contents ssh-config)
-                    (let (res)
-                      (goto-char (point-min))
-                      ;; 优化正则：支持 Host 前有空格，确保匹配完整单词
-                      (while (re-search-forward "^[ \t]*Host[ \t]+\\([^ \t\n\*]+\\)" nil t)
-                        (push (match-string 1) res))
-                      (delete-dups (nreverse res)))))))
-    (if (not hosts)
-        (message "未在 ~/.ssh/config 中找到有效主机")
-      (let ((selected-host (completing-read "SSH to: " hosts nil t)))
-        (when (and selected-host (not (string-empty-p selected-host)))
-          ;; 1. 清理当前 Eshell 输入行的内容
-          (eshell-kill-input)
-          ;; 2. 插入命令并回车
-          (insert (format "ssh %s" selected-host))
-          (eshell-send-input))))))
-
-;ssh 绑定
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (local-set-key (kbd "<f8>") #'my/eshell-ssh-connect)))
-
-;; --- 配置生效 ---
+  (let* ((hosts (my/eshell--load-ssh-hosts))
+         (host (completing-read "SSH to: " hosts nil t)))
+    (when (and host (not (string-empty-p host)))
+      ;; 打开 term
+      (let ((buf (ansi-term "/bin/bash")))
+        (with-current-buffer buf
+          ;; 重命名 buffer
+          (rename-buffer (format "*ssh:%s*" host) t)
+          ;; 发送 ssh 命令
+          (term-send-raw-string (format "ssh %s\n" host)))))))
 
 ;; 初始化加载
 (my/eshell--load-where)
 
 ;; 运行 30 秒空闲时才写入磁盘，避免高频操作
-(run-with-idle-timer 3 t #'my/eshell--save-where)
+(run-with-idle-timer 30 t #'my/eshell--save-where)
 
 (with-eval-after-load 'eshell
   ;; 拦截 cd 命令
@@ -99,4 +104,10 @@
 
   ;; 挂载钩子：只要目录变了就记录（涵盖了 cd, pushd, 以及插件跳转）
   (add-hook 'eshell-directory-change-hook
-            (lambda () (when default-directory (my/eshell--add-path default-directory)))))
+            (lambda () (when default-directory (my/eshell--add-path default-directory))))
+
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<f8>") #'my/term-ssh))))
+
+(provide 'init-eshell)

@@ -3369,6 +3369,10 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
   (normal-top-level-add-subdirs-to-load-path))
 
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
 (require 'emacs-solo-themes)
 (require 'emacs-solo-movements)
 (require 'emacs-solo-formatter)
