@@ -1704,7 +1704,7 @@ For the current icon style."
                              'face `(:foreground ,eshell-solo/color-bg-mid :background ,eshell-solo/color-bg-dark))
 
                  (propertize (concat " " (emacs-solo/glyph 'folder)  " "
-                                     (if (>= (length (eshell/pwd)) 40)
+                                     (if (>= (length (eshell/pwd)) 140)
                                          (concat "…" (car (last (butlast (split-string (eshell/pwd) "/") 0))))
                                        (abbreviate-file-name (eshell/pwd))) " ")
                              'face `(:background ,eshell-solo/color-bg-dark :foreground ,eshell-solo/color-fg-dir))
@@ -3411,11 +3411,11 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (require 'init-sort-tab)
 (require 'init-vi-navigate)
 (require 'init-expand-region)
-(require 'init-eat)
 (require 'init-toggle-one-window)
 (require 'init-consult)
 (require 'init-yasnippet)
 (require 'init-multiple-cursor)
 (require 'init-format-all)
+(require 'init-eshell)
 (provide 'init)
 ;;; └ init.el ends here

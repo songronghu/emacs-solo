@@ -1,80 +1,102 @@
 (defvar my/eshell-where-file
   "/home/ronghusong/src/github/emacs-solo/eshell/.where")
 
-(defun my/eshell--ensure-where-file ()
-  (unless (file-exists-p my/eshell-where-file)
-    (make-directory (file-name-directory my/eshell-where-file) t)
-    (write-region "" nil my/eshell-where-file)))
+(defvar my/eshell-where-cache nil "内存中的路径缓存列表")
 
-(defun my/eshell--read-where ()
-  (my/eshell--ensure-where-file)
-  (with-temp-buffer
-    (insert-file-contents my/eshell-where-file)
-    (split-string (buffer-string) "\n" t)))
+(defun my/eshell--load-where ()
+  "启动时加载一次文件。"
+  (when (file-exists-p my/eshell-where-file)
+    (with-temp-buffer
+      (insert-file-contents my/eshell-where-file)
+      (setq my/eshell-where-cache (split-string (buffer-string) "\n" t)))))
 
-(defun my/eshell--write-where (paths)
+(defun my/eshell--save-where ()
+  "将缓存写入磁盘（仅在有变化时建议调用）。"
+  (let ((dir (file-name-directory my/eshell-where-file)))
+    (unless (file-directory-p dir) (make-directory dir t)))
   (with-temp-file my/eshell-where-file
-                  (insert (mapconcat #'identity paths "\n"))))
+    (insert (mapconcat #'identity my/eshell-where-cache "\n"))))
 
 (defun my/eshell--add-path (path)
-  (let* ((paths (my/eshell--read-where))
-         (abs (expand-file-name path))
-         (new (cons abs (remove abs paths))))
-    (my/eshell--write-where new)))
+  "更新缓存：排重并置顶最新路径。"
+  (let ((abs (directory-file-name (expand-file-name path))))
+    ;; 只有当路径不在首位时才操作，减少不必要的重绘/写入
+    (unless (string= abs (car my/eshell-where-cache))
+      (setq my/eshell-where-cache (cons abs (delete abs my/eshell-where-cache)))
+      ;; 限制 1000 条最常用记录，保证搜索速度
+      (when (> (length my/eshell-where-cache) 1000)
+        (setcdr (nthcdr 999 my/eshell-where-cache) nil)))))
 
-(defun my/eshell--match (input paths)
-  (let ((keywords (split-string input " " t)))
+(defun my/eshell--match-history (input)
+  "在历史中进行关键词过滤。"
+  (let ((kws (split-string input " " t)))
     (seq-filter
-      (lambda (p)
-        (cl-every (lambda (k)
-                    (string-match-p (regexp-quote k) p))
-                  keywords))
-      paths)))
+     (lambda (path)
+       (cl-every (lambda (k) (string-search k path)) kws))
+     my/eshell-where-cache)))
 
-(defun my/eshell--choose (candidates)
-  (if (= (length candidates) 1)
-    (car candidates)
-    (progn
-      (message "\n%s"
-               (mapconcat
-                 (lambda (p)
-                   (format "%d %s"
-                           (1+ (cl-position p candidates))
-                           p))
-                 candidates "\n"))
-      (let* ((idx (read-number "Select index: "))
-             (choice (nth (1- idx) candidates)))
-        choice))))
+(defun my/eshell-smart-cd (orig-fun &rest args)
+  "核心 CD 逻辑。"
+  (let* ((input (string-join args " "))
+         (abs-input (and (not (string-empty-p input)) (expand-file-name input))))
+    (cond
+     ;; 1. 如果输入已经是存在的目录，直接去，不搜索历史
+     ((and abs-input (file-directory-p abs-input))
+      (apply orig-fun (list abs-input)))
 
-(defun my/eshell-smart-cd-advice (orig-fun &rest args)
-  (let ((input (string-join args " ")))
-    (if (and (not (string-empty-p input))
-             (file-directory-p (expand-file-name input default-directory)))
-        (progn
-          (apply orig-fun args)
-          (my/eshell--add-path (expand-file-name input default-directory)))
-      (let* ((paths (my/eshell--read-where))
-             (matches (and (not (string-empty-p input))
-                           (my/eshell--match input paths))))
-        (if matches
-            (let ((target (my/eshell--choose matches)))
-              (when target
-                (apply orig-fun (list target))
-                (my/eshell--add-path target)))
-          (prog1
-              (apply orig-fun args)
-            (when default-directory
-              (my/eshell--add-path default-directory))))))))
+     ;; 2. 如果输入不是目录，尝试在历史中模糊匹配
+     ((not (string-empty-p input))
+      (let ((matches (my/eshell--match-history input)))
+        (pcase (length matches)
+          (0 (apply orig-fun args)) ;; 没找到，交给原函数（报错）
+          (1 (apply orig-fun (list (car matches)))) ;; 唯一匹配
+          (_ (let ((choice (completing-read "Jump to: " matches nil t))) ;; 多个匹配
+               (when choice (apply orig-fun (list choice))))))))
+
+     ;; 3. 无参数 cd (回主目录)
+     (t (apply orig-fun args)))))
+
+;; ssh 主机补全
+(defun my/eshell-ssh-connect ()
+  "解析 ~/.ssh/config 并在 Eshell 中快速连接主机。"
+  (interactive)
+  (let* ((ssh-config (expand-file-name "~/.ssh/config"))
+         (hosts (when (file-exists-p ssh-config)
+                  (with-temp-buffer
+                    (insert-file-contents ssh-config)
+                    (let (res)
+                      (goto-char (point-min))
+                      ;; 优化正则：支持 Host 前有空格，确保匹配完整单词
+                      (while (re-search-forward "^[ \t]*Host[ \t]+\\([^ \t\n\*]+\\)" nil t)
+                        (push (match-string 1) res))
+                      (delete-dups (nreverse res)))))))
+    (if (not hosts)
+        (message "未在 ~/.ssh/config 中找到有效主机")
+      (let ((selected-host (completing-read "SSH to: " hosts nil t)))
+        (when (and selected-host (not (string-empty-p selected-host)))
+          ;; 1. 清理当前 Eshell 输入行的内容
+          (eshell-kill-input)
+          ;; 2. 插入命令并回车
+          (insert (format "ssh %s" selected-host))
+          (eshell-send-input))))))
+
+;ssh 绑定
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (local-set-key (kbd "<f8>") #'my/eshell-ssh-connect)))
+
+;; --- 配置生效 ---
+
+;; 初始化加载
+(my/eshell--load-where)
+
+;; 运行 30 秒空闲时才写入磁盘，避免高频操作
+(run-with-idle-timer 3 t #'my/eshell--save-where)
 
 (with-eval-after-load 'eshell
-                      (advice-add 'eshell/cd :around #'my/eshell-smart-cd-advice))
+  ;; 拦截 cd 命令
+  (advice-add 'eshell/cd :around #'my/eshell-smart-cd)
 
-;; 自动记录 cd
-(defun my/eshell-track-cd ()
-  (when default-directory
-    (my/eshell--add-path default-directory)))
-
-(add-hook 'eshell-directory-change-hook #'my/eshell-track-cd)
-
-(provide 'init-eshell)
-
+  ;; 挂载钩子：只要目录变了就记录（涵盖了 cd, pushd, 以及插件跳转）
+  (add-hook 'eshell-directory-change-hook
+            (lambda () (when default-directory (my/eshell--add-path default-directory)))))
