@@ -5,15 +5,15 @@
 (defvar my/eshell-where-dirty nil)
 
 (defun my/eshell--load-where ()
-  "启动时加载一次文件。"
+  "启动时加载一次文件"
   (when (file-exists-p my/eshell-where-file)
     (with-temp-buffer
       (insert-file-contents my/eshell-where-file)
       (setq my/eshell-where-cache (split-string (buffer-string) "\n" t)))))
 
 (defun my/eshell--save-where ()
-  "将缓存写入磁盘（仅在有变化时建议调用）。"
-  (when my/eshell-where-dirty
+  "将缓存写入磁盘（仅在有变化时建议调用）"
+   (when my/eshell-where-dirty
     (setq my/eshell-where-dirty nil)
     (let ((dir (file-name-directory my/eshell-where-file)))
       (unless (file-directory-p dir) (make-directory dir t)))
@@ -21,7 +21,7 @@
       (insert (mapconcat #'identity my/eshell-where-cache "\n")))))
 
 (defun my/eshell--add-path (path)
-  "更新缓存：排重并置顶最新路径。"
+  "更新缓存：排重并置顶最新路径"
   (let ((abs (directory-file-name (expand-file-name path))))
     ;; 只有当路径不在首位时才操作，减少不必要的重绘/写入
     (unless (string= abs (car my/eshell-where-cache))
@@ -32,7 +32,7 @@
         (setcdr (nthcdr 2999 my/eshell-where-cache) nil)))))
 
 (defun my/eshell--match-history (input)
-  "在历史中进行关键词过滤。"
+  "在历史中进行关键词过滤"
   (let ((kws (split-string input " " t)))
     (seq-filter
      (lambda (path)
@@ -40,7 +40,7 @@
      my/eshell-where-cache)))
 
 (defun my/eshell-smart-cd (orig-fun &rest args)
-  "核心 cd 逻辑。"
+  "核心 cd 逻辑"
   (let* ((input (string-join args " "))
          (abs-input (and (not (string-empty-p input)) (expand-file-name input))))
     (cond

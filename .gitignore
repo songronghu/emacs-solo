@@ -71,3 +71,4 @@ cert.pem
 multisession/
 tmp/
 eaf/*
+eglot-java-eclipse-jdt-cache/*

@@ -49,7 +49,6 @@
 
 
 ;;; Code:
-
 ;;; ┌──────────────────── EMACS SOLO CUSTOM OPTIONS
 ;;
 ;;  Some features Emacs Solo provides you can turn on/off
@@ -66,17 +65,17 @@
 (defcustom emacs-solo-icon-modules
   '(dired eshell ibuffer)
   "List of Emacs Solo icon modules to enable.
-Controls which modules display file type icons.
+    Controls which modules display file type icons.
 
-Valid values (combine in a list):
-- \\='dired: Show file type icons in Dired buffers
-- \\='eshell: Show file type icons in Eshell prompts
-- \\='ibuffer: Show buffer type icons in Ibuffer
-- \\='nerd: Prefer Nerd Font glyphs over Emojis
-- nil: Disable all icons
+    Valid values (combine in a list):
+    - \\='dired: Show file type icons in Dired buffers
+    - \\='eshell: Show file type icons in Eshell prompts
+    - \\='ibuffer: Show buffer type icons in Ibuffer
+    - \\='nerd: Prefer Nerd Font glyphs over Emojis
+    - nil: Disable all icons
 
-Default is \\='(dired eshell ibuffer), which uses Emoji icons.
-Add \\='nerd to the list to use Nerd Font glyphs instead."
+    Default is \\='(dired eshell ibuffer), which uses Emoji icons.
+    Add \\='nerd to the list to use Nerd Font glyphs instead."
   :type '(set :tag "Emacs Solo icon modules"
               (const :tag "Use icons on Dired" dired)
               (const :tag "Use icons on Eshell" eshell)
@@ -117,15 +116,15 @@ Add \\='nerd to the list to use Nerd Font glyphs instead."
 (defcustom emacs-solo-use-custom-theme 'crafters
   "Select which emacs-solo customization theme to use.
 
-Valid values are:
-- \\='catppuccin
-- \\='crafters
-- \\='gits
-- \\='matrix
-- nil: Disable custom theme
+    Valid values are:
+    - \\='catppuccin
+    - \\='crafters
+    - \\='gits
+    - \\='matrix
+    - nil: Disable custom theme
 
-IMPORTANT NOTE: If you disable this or choose another theme, also check
-\\='emacs-solo-avoid-flash-options to ensure compatibility."
+    IMPORTANT NOTE: If you disable this or choose another theme, also check
+    \\='emacs-solo-avoid-flash-options to ensure compatibility."
   :type '(choice
           (const :tag "Disabled" nil)
           (const :tag "Catppuccin" catppuccin)
@@ -140,9 +139,10 @@ IMPORTANT NOTE: If you disable this or choose another theme, also check
   :group 'emacs-solo)
 
 ;; (defcustom emacs-solo-preferred-font-name "JetBrainsMono Nerd Font"
-(defcustom emacs-solo-preferred-font-name "Monaco"
+;;(defcustom emacs-solo-preferred-font-name "Monaco"
+(defcustom emacs-solo-preferred-font-name "JetBrains Mono"
   "The name of the font to be used.
-Examples: `Maple Mono NF' or `JetBrainsMono Nerd Font'."
+    Examples: `Maple Mono NF' or `JetBrainsMono Nerd Font'."
   :type 'string
   :group 'emacs-solo)
 
@@ -153,35 +153,35 @@ Examples: `Maple Mono NF' or `JetBrainsMono Nerd Font'."
 
 (defcustom emacs-solo-ai-scratch-path nil
   "If non-nil, AI commands run from this directory.
-This allows using a specific environment or scratch context."
+    This allows using a specific environment or scratch context."
   :type '(choice (const :tag "Disabled" nil)
                  (directory :tag "AI Scratch Directory"))
   :group 'emacs-solo)
 
 (defcustom emacs-solo-enable-erc-image t
   "Whether to enable inline image support in ERC buffers.
-This is enabled by default and allows displaying images directly from
-URLs posted in ERC channels."
+    This is enabled by default and allows displaying images directly from
+    URLs posted in ERC channels."
   :type 'boolean
   :group 'emacs-solo)
 
 (defcustom emacs-solo-enable-auto-formatter t
   "Whether to automatically enable format-on-save for files.
-Respects the `emacs-solo-formatter-alist'.  When non-nil, opening a file whose
-extension has a registered formatter will add format-on-save to the
-buffer's `after-save-hook'."
+    Respects the `emacs-solo-formatter-alist'.  When non-nil, opening a file whose
+    extension has a registered formatter will add format-on-save to the
+    buffer's `after-save-hook'."
   :type 'boolean
   :group 'emacs-solo)
 
 (defcustom emacs-solo-enable-flymake-eslint nil
   "Whether to enable Flymake integration using ESLint.
-This is disabled by default, since nowadays we tend to use LSP servers
-for ESLint."
+    This is disabled by default, since nowadays we tend to use LSP servers
+    for ESLint."
   :type 'boolean
   :group 'emacs-solo)
 
-;;; ├──────────────────── GENERAL EMACS CONFIG
-;;; │ EMACS
+    ;;; ├──────────────────── GENERAL EMACS CONFIG
+    ;;; │ EMACS
 (use-package emacs
   :ensure nil
   :bind                      ; NOTE: M-x describe-personal-bindings (for all use-packge binds)
@@ -541,8 +541,8 @@ for ESLint."
   ;; ELISP evaluations show results in an overlay
   (defun emacs-solo/eval-last-sexp-overlay (arg)
     "Eval last sexp and show result inline as overlay.
-With prefix ARG, insert the result inline instead.
-Use ⇒ if displayable, otherwise fallback to =>."
+    With prefix ARG, insert the result inline instead.
+    Use ⇒ if displayable, otherwise fallback to =>."
     (interactive "P")
     (let ((arrow (if (char-displayable-p ?⇒) " ; ⇒ " " ; => ")))
       (if arg
@@ -581,8 +581,8 @@ Use ⇒ if displayable, otherwise fallback to =>."
   ;; Keep margins from automatic resizing
   (defun emacs-solo/set-default-window-margins ()
     "Set default left and right margins for all windows.
-Unless the buffer uses `emacs-solo/center-document-mode`
-or is an ERC buffer."
+    Unless the buffer uses `emacs-solo/center-document-mode`
+    or is an ERC buffer."
     (interactive)
     (dolist (window (window-list))
       (with-current-buffer (window-buffer window)
@@ -608,17 +608,17 @@ or is an ERC buffer."
 
   (with-current-buffer (get-buffer-create "*scratch*")
     (insert (format ";;
-;; ███████╗███╗   ███╗ █████╗  ██████╗███████╗    ███████╗ ██████╗ ██╗      ██████╗
-;; ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝    ██╔════╝██╔═══██╗██║     ██╔═══██╗
-;; █████╗  ██╔████╔██║███████║██║     ███████╗    ███████╗██║   ██║██║     ██║   ██║
-;; ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║    ╚════██║██║   ██║██║     ██║   ██║
-;; ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║    ███████║╚██████╔╝███████╗╚██████╔╝
-;; ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝
-;;
-;;   Loading time : %s
-;;   Packages     : %s
-;;
-"
+    ;; ███████╗███╗   ███╗ █████╗  ██████╗███████╗    ███████╗ ██████╗ ██╗      ██████╗
+    ;; ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝    ██╔════╝██╔═══██╗██║     ██╔═══██╗
+    ;; █████╗  ██╔████╔██║███████║██║     ███████╗    ███████╗██║   ██║██║     ██║   ██║
+    ;; ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║    ╚════██║██║   ██║██║     ██║   ██║
+    ;; ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║    ███████║╚██████╔╝███████╗╚██████╔╝
+    ;; ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝
+    ;;
+    ;;   Loading time : %s
+    ;;   Packages     : %s
+    ;;
+    "
                     (emacs-init-time)
                     (number-to-string (length package-activated-list)))))
 
@@ -635,7 +635,7 @@ or is an ERC buffer."
   :config
   (defun emacs-solo/abbrev--replace-placeholders ()
     "Replace placeholders ###1###, ###2###, ... with minibuffer input.
-If ###@### is found, remove it and place point there at the end."
+    If ###@### is found, remove it and place point there at the end."
     (let ((cursor-pos nil)) ;; to store where to place point
       (save-excursion
         (goto-char (point-min))
@@ -996,41 +996,41 @@ If ###@### is found, remove it and place point there at the end."
 
     (defcustom icomplete-vertical-in-buffer-adjust-list t
       "Control whether in-buffer completion should align the cursor position.
-If this is t and `icomplete-in-buffer' is t, and `icomplete-vertical-mode'
-is activated, the in-buffer vertical completions are shown aligned to the
-cursor position when the completion started, not on the first column, as
-the default behaviour."
+    If this is t and `icomplete-in-buffer' is t, and `icomplete-vertical-mode'
+    is activated, the in-buffer vertical completions are shown aligned to the
+    cursor position when the completion started, not on the first column, as
+    the default behaviour."
       :type 'boolean
       :group 'icomplete
       :version "31.1")
 
     (defcustom icomplete-vertical-render-prefix-indicator t
       "Control whether a indicator is added as a prefix to each candidate.
-If this is t and `icomplete-vertical-mode' is activated, a indicator,
-controlled by `icomplete-vertical-selected-prefix-indicator' is shown
-as a prefix to the current under selection candidate, while the
-remaining of the candidates will receive the indicator controlled
-by `icomplete-vertical-unselected-prefix-indicator'."
+    If this is t and `icomplete-vertical-mode' is activated, a indicator,
+    controlled by `icomplete-vertical-selected-prefix-indicator' is shown
+    as a prefix to the current under selection candidate, while the
+    remaining of the candidates will receive the indicator controlled
+    by `icomplete-vertical-unselected-prefix-indicator'."
       :type 'boolean
       :group 'icomplete
       :version "31.1")
 
     (defcustom icomplete-vertical-selected-prefix-indicator "» "
       "Prefix string used to mark the selected completion candidate.
-If `icomplete-vertical-render-prefix-indicator' is t, the string
-defined here is used as a prefix of the currently selected entry in the
-list.  It can be further customized by the face
-`icomplete-vertical-selected-prefix-indicator-face'."
+    If `icomplete-vertical-render-prefix-indicator' is t, the string
+    defined here is used as a prefix of the currently selected entry in the
+    list.  It can be further customized by the face
+    `icomplete-vertical-selected-prefix-indicator-face'."
       :type 'string
       :group 'icomplete
       :version "31.1")
 
     (defcustom icomplete-vertical-unselected-prefix-indicator "  "
       "Prefix string used on the unselected completion candidates.
-If `icomplete-vertical-render-prefix-indicator' is t, the string
-defined here is used as a prefix for all unselected entries in the list.
-list.  It can be further customized by the face
-`icomplete-vertical-unselected-prefix-indicator-face'."
+    If `icomplete-vertical-render-prefix-indicator' is t, the string
+    defined here is used as a prefix for all unselected entries in the list.
+    list.  It can be further customized by the face
+    `icomplete-vertical-unselected-prefix-indicator-face'."
       :type 'string
       :group 'icomplete
       :version "31.1")
@@ -1069,8 +1069,8 @@ list.  It can be further customized by the face
     ;; FIXME: remove this after patch
     (defun icomplete-vertical--ensure-visible-lines-inside-buffer ()
       "Ensure the completion list is visible in regular buffers only.
-Scrolls the screen to be at least `icomplete-prospects-height' real lines
-away from the bottom.  Counts wrapped lines as real lines."
+    Scrolls the screen to be at least `icomplete-prospects-height' real lines
+    away from the bottom.  Counts wrapped lines as real lines."
       (unless (minibufferp)
         (let* ((window-height (window-body-height))
                (current-line (count-screen-lines (window-start) (point)))
@@ -1335,7 +1335,7 @@ away from the bottom.  Counts wrapped lines as real lines."
 
   (defun emacs-solo/dired-run-async-on-marked-files (command)
     "Run COMMAND asynchronously on marked files in Dired.
-Ex: mpv file1 file2 file3 file4..."
+    Ex: mpv file1 file2 file3 file4..."
     (interactive "sCommand: ")
     (let ((files (dired-get-marked-files)))
       (start-process-shell-command command nil (format "%s %s" command (mapconcat 'shell-quote-argument files " ")))))
@@ -1363,7 +1363,7 @@ Ex: mpv file1 file2 file3 file4..."
   (setq wdired-create-parent-directories t))
 
 
-;;; │ ESHELL
+    ;;; │ ESHELL
 (use-package eshell
   :ensure nil
   :bind
@@ -1428,7 +1428,7 @@ Ex: mpv file1 file2 file3 file4..."
   ;;
   (defun emacs-solo/eshell-pick-history ()
     "Show a unified and unique Eshell history from all open sessions + history file.
-Pre-fills the minibuffer with current Eshell input (from prompt to point)."
+    Pre-fills the minibuffer with current Eshell input (from prompt to point)."
     (interactive)
     (unless (derived-mode-p 'eshell-mode)
       (user-error "This command must be called from an Eshell buffer"))
@@ -1476,7 +1476,7 @@ Pre-fills the minibuffer with current Eshell input (from prompt to point)."
   ;;
   (defun eshell/cat-with-syntax-highlighting (filename)
     "Like cat(1) but with syntax highlighting.
-  Stole from aweshell"
+      Stole from aweshell"
     (let ((existing-buffer (get-file-buffer filename))
           (buffer (find-file-noselect filename)))
       (eshell-print
@@ -1515,27 +1515,27 @@ Pre-fills the minibuffer with current Eshell input (from prompt to point)."
   (defvar emacs-solo/eshell-full-prompt t
     "When non-nil, show the full Eshell prompt. When nil, show minimal prompt.
 
-If any special glyph it not displayable, like when on tty, those will
-not be rendered.
+    If any special glyph it not displayable, like when on tty, those will
+    not be rendered.
 
-The minimal version shows only the `emacs-solo/eshell-lambda-symbol', like:
- 𝛌
+    The minimal version shows only the `emacs-solo/eshell-lambda-symbol', like:
+     𝛌
 
-The full version shows something like:
+    The full version shows something like:
 
- 🟢 0 🧙 user  💻 hostname  🕒 23:03:12  📁 ~/Projects/emacs-solo 
-  main 
+     🟢 0 🧙 user  💻 hostname  🕒 23:03:12  📁 ~/Projects/emacs-solo 
+      main 
 
-There is also `emacs-solo/eshell-full-prompt-resource-intensive' which will
-print some extra `expensive' information, like conflicts, remote status, and
-more, like:
+    There is also `emacs-solo/eshell-full-prompt-resource-intensive' which will
+    print some extra `expensive' information, like conflicts, remote status, and
+    more, like:
 
- 🟢 0 🧙 user  💻 hostname  🕒 23:03:12  📁 ~/Projects/emacs-solo 
-  main ✏️2 ✨1 ")
+     🟢 0 🧙 user  💻 hostname  🕒 23:03:12  📁 ~/Projects/emacs-solo 
+      main ✏️2 ✨1 ")
 
   (defvar emacs-solo/eshell-full-prompt-resource-intensive nil
     "When non-nil, and emacs-solo/eshell-full-prompt t. Also show slower operations.
-Check `emacs-solo/eshell-full-prompt' for more info.")
+    Check `emacs-solo/eshell-full-prompt' for more info.")
 
   (defvar emacs-solo/eshell-lambda-symbol (if (char-displayable-p ?λ) "  λ " "  $ ")
     "Symbol used for the minimal Eshell prompt.")
@@ -1590,7 +1590,7 @@ Check `emacs-solo/eshell-full-prompt' for more info.")
 
   (defun emacs-solo/glyph (name)
     "Look up glyph NAME in `emacs-solo/eshell-prompt-glyphs'.
-For the current icon style."
+    For the current icon style."
     (let* ((row (assq name emacs-solo/eshell-prompt-glyphs))
            (style (cond
                    ((not (memq 'eshell emacs-solo-icon-modules)) :noicons)
@@ -1936,8 +1936,8 @@ For the current icon style."
 
   (defun emacs-solo/vc-browse-remote (&optional current-line)
     "Open the repository's remote URL in the browser.
-If CURRENT-LINE is non-nil, point to the current branch, file, and line.
-Otherwise, open the repository's main page."
+    If CURRENT-LINE is non-nil, point to the current branch, file, and line.
+    Otherwise, open the repository's main page."
     (interactive "P")
     (let* ((remote-url (string-trim (vc-git--run-command-string nil "config" "--get" "remote.origin.url")))
            (branch (string-trim (vc-git--run-command-string nil "rev-parse" "--abbrev-ref" "HEAD")))
@@ -1985,7 +1985,7 @@ Otherwise, open the repository's main page."
 
   (defun emacs-solo/switch-git-status-buffer ()
     "Switch to a buffer visiting a modified or renamed file in the current Git repo.
-The completion candidates include the Git status of each file."
+    The completion candidates include the Git status of each file."
     (interactive)
     (require 'vc-git)
     (let ((repo-root (vc-git-root default-directory)))
@@ -2014,7 +2014,7 @@ The completion candidates include the Git status of each file."
               (message "No modified or renamed files found.")
             (let* ((candidates target-files)
                    (selection (completing-read "Switch to buffer (Git modified): "
-1                                              (mapcar #'car candidates) nil t)))
+                                               1                                              (mapcar #'car candidates) nil t)))
               (when selection
                 (let ((file-path (cdr (assoc selection candidates))))
                   (when file-path
@@ -2055,7 +2055,7 @@ The completion candidates include the Git status of each file."
               ("C-c C-s C-n" . smerge-next)
               ("C-c C-s C-p" . smerge-prev)))
 
-;;; │ DIFF
+    ;;; │ DIFF
 (use-package diff-mode
   :ensure nil
   :defer t
@@ -2080,7 +2080,7 @@ The completion candidates include the Git status of each file."
   (setq ediff-make-buffers-readonly-at-startup nil)
   (setq ediff-show-clashes-only t))
 
-;;; │ ELDOC
+    ;;; │ ELDOC
 (use-package eldoc
   :ensure nil
   :custom
@@ -2106,6 +2106,7 @@ The completion candidates include the Git status of each file."
 
   (setq-default eglot-workspace-configuration (quote
                                                (:gopls (:hints (:parameterNames t)))))
+  (setq eglot-report-progress nil)
 
   (defun emacs-solo/eglot-setup ()
     "Setup eglot mode with specific exclusions."
@@ -2132,12 +2133,20 @@ The completion candidates include the Git status of each file."
           "tailwindcss-language-server" "--stdio"))))
 
   (with-eval-after-load 'eglot
-      (add-to-list
-       'eglot-server-programs
-       '((clojure-mode clojurescript-mode) . ("clojure-lsp"))))
+    (add-to-list
+     'eglot-server-programs
+     '((clojure-mode clojurescript-mode) . ("clojure-lsp"))))
 
+  ;; (with-eval-after-load 'eglot
+  ;;   (add-to-list
+  ;;    'eglot-server-programs
+  ;;    '((java-mode java-ts-mode) . ("jdtls"
+  ;;                                  "-configuration" "/home/ronghusong/software/opensoft/jdtls/config_linux/"
+  ;;                                  "-data" "/home/ronghusong/.cache/jdtls/"))))
   :bind (:map
          eglot-mode-map
+         ("C-7" . eglot-find-declaration)
+         ("C-8" . eglot-find-implementation)
          ("C-c l a" . eglot-code-actions)
          ("C-c l o" . eglot-code-action-organize-imports)
          ("C-c l r" . eglot-rename)
@@ -2152,6 +2161,8 @@ The completion candidates include the Git status of each file."
   :bind (:map flymake-mode-map
               ;;("M-8" . flymake-goto-next-error)
               ;;("M-7" . flymake-goto-prev-error)
+              ("M-5" . flymake-goto-prev-error)
+              ("M-6" . flymake-goto-next-error)
               ("C-c ! n" . flymake-goto-next-error)
               ("C-c ! p" . flymake-goto-prev-error)
               ("C-c ! l" . flymake-show-buffer-diagnostics)
@@ -2168,7 +2179,7 @@ The completion candidates include the Git status of each file."
   ;; Define the toggle function
   (defun toggle-flymake-diagnostics-at-eol ()
     "Toggle the display of Flymake diagnostics at the end of the line
-and restart Flymake to apply the changes."
+    and restart Flymake to apply the changes."
     (interactive)
     (setq flymake-show-diagnostics-at-end-of-line
           (not flymake-show-diagnostics-at-end-of-line))
@@ -2278,11 +2289,11 @@ and restart Flymake to apply the changes."
       (:around (quit) quit-current-context)
     "Quit the current context.
 
-When there is an active minibuffer and we are not inside it close
-it.  When we are inside the minibuffer use the regular
-`minibuffer-keyboard-quit' which quits any active region before
-exiting.  When there is no minibuffer `keyboard-quit' unless we
-are defining or executing a macro."
+    When there is an active minibuffer and we are not inside it close
+    it.  When we are inside the minibuffer use the regular
+    `minibuffer-keyboard-quit' which quits any active region before
+    exiting.  When there is no minibuffer `keyboard-quit' unless we
+    are defining or executing a macro."
     (if (active-minibuffer-window)
         (if (minibufferp)
             (minibuffer-keyboard-quit)
@@ -2304,7 +2315,7 @@ are defining or executing a macro."
   (defun emacs-solo/setup-simple-orderless ()
     (defun simple-orderless-completion (string table pred _point)
       "Enhanced orderless completion with better partial matching.
-As seen on: https://emacs.dyerdwelling.family/emacs/20250604085817-emacs--building-your-own-orderless-style-completion-in-emacs-lisp/"
+    As seen on: https://emacs.dyerdwelling.family/emacs/20250604085817-emacs--building-your-own-orderless-style-completion-in-emacs-lisp/"
       (let* ((words (split-string string "[-, ]+")))
         (if (string-empty-p string)
             (all-completions "" table pred)
@@ -2585,7 +2596,7 @@ As seen on: https://emacs.dyerdwelling.family/emacs/20250604085817-emacs--buildi
                     "uniq | "
                     "(echo '%s'; cat -) | "
                     "claude -p --model haiku -")
-                    ;; "gemini --extensions none --model \"gemini-2.5-flash\" -p -")
+                   ;; "gemini --extensions none --model \"gemini-2.5-flash\" -p -")
                    (shell-quote-argument base-path)      ;; For trap
                    (shell-quote-argument base-path)      ;; For yt-dlp's -o
                    (shell-quote-argument video-url)      ;; The video URL
@@ -2785,14 +2796,14 @@ As seen on: https://emacs.dyerdwelling.family/emacs/20250604085817-emacs--buildi
   (setq org-log-done 'time)
 
   ;; Load babel only when org loads
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((python . t)
-       (js . t)
-       (emacs-lisp . t)
-       (org . t)
-       (shell . t)))
-    (setq org-confirm-babel-evaluate nil))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (js . t)
+     (emacs-lisp . t)
+     (org . t)
+     (shell . t)))
+  (setq org-confirm-babel-evaluate nil))
 
 ;;; │ SPEEDBAR
 ;;
@@ -2994,11 +3005,11 @@ As seen on: https://emacs.dyerdwelling.family/emacs/20250604085817-emacs--buildi
 
 
 
-;;; ├──────────────────── COMMON LISP
+    ;;; ├──────────────────── COMMON LISP
 ;;  │
 ;;  │ Built-in CL env (no SLY/SWANK). No debugger restarts, inspector or cross-refs.
 ;;  │
-;;; │ INFERIOR-LISP
+    ;;; │ INFERIOR-LISP
 (use-package inf-lisp
   :ensure nil
   :defer t
@@ -3014,7 +3025,7 @@ As seen on: https://emacs.dyerdwelling.family/emacs/20250604085817-emacs--buildi
   :config
   (defun emacs-solo/switch-to-lisp ()
     "Switch to inferior Lisp process, starting one if needed.
-Shows the REPL in a window below, keeping focus in the code buffer."
+    Shows the REPL in a window below, keeping focus in the code buffer."
     (interactive)
     (let ((code-buffer (current-buffer)))
       (unless (and (get-process "inferior-lisp")
@@ -3073,11 +3084,11 @@ Shows the REPL in a window below, keeping focus in the code buffer."
       (when (and proc (not (string-empty-p prefix)))
         (let* ((expr (format
                       "(let ((completions nil))
-                         (do-all-symbols (s)
-                           (when (and (fboundp s)
-                                      (eql 0 (search \"%s\" (symbol-name s))))
-                             (push (string-downcase (symbol-name s)) completions)))
-                         (sort (remove-duplicates completions :test #'string=) #'string<))"
+                             (do-all-symbols (s)
+                               (when (and (fboundp s)
+                                          (eql 0 (search \"%s\" (symbol-name s))))
+                                 (push (string-downcase (symbol-name s)) completions)))
+                             (sort (remove-duplicates completions :test #'string=) #'string<))"
                       (upcase prefix)))
                (raw (emacs-solo/cl--send-and-capture expr))
                (cleaned (replace-regexp-in-string
@@ -3211,7 +3222,7 @@ Shows the REPL in a window below, keeping focus in the code buffer."
 ;;; │ TYPESCRIPT-TS-MODE
 (defun emacs-solo/add-jsdoc-in-typescript-ts-mode ()
   "Add jsdoc treesitter rules to typescript as a host language.
-As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_adding_jsdoc_highlighting_to"
+    As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_adding_jsdoc_highlighting_to"
   ;; I copied this code from js.el (js-ts-mode), with minimal modifications.
   (when (treesit-ready-p 'typescript)
     (when (treesit-ready-p 'jsdoc t)
@@ -3369,6 +3380,12 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
   (normal-top-level-add-subdirs-to-load-path))
 
+(setq treesit-language-source-alist
+      '((tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+        (java "https://github.com/tree-sitter/tree-sitter-java" "master" "src")
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript")))
+
 (require 'server)
 (unless (server-running-p)
   (server-start))
@@ -3421,5 +3438,8 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 (require 'init-multiple-cursor)
 (require 'init-format-all)
 (require 'init-eshell)
+(require 'init-avy)
+(require 'init-corfu)
+(require 'init-eglot-java)
 (provide 'init)
 ;;; └ init.el ends here
