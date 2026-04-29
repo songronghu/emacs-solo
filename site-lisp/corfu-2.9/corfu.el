@@ -238,8 +238,8 @@ settings `corfu-auto-delay', `corfu-auto-prefix' and
   "<remap> <keyboard-escape-quit>" #'corfu-reset
   "<down>" #'corfu-next
   "<up>" #'corfu-previous
-  "M-n" #'corfu-next
-  "M-p" #'corfu-previous
+  ;;"M-n" #'corfu-next
+  ;;"M-p" #'corfu-previous
   "C-g" #'corfu-quit
   "RET" #'corfu-insert
   "TAB" #'corfu-complete

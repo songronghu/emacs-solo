@@ -205,6 +205,7 @@
    ("C-M-z" . delete-pair)
    ("C-x C-k RET" . nil))
   :custom
+  (text-mode-ispell-word-completion nil)
   (ad-redefinition-action 'accept)
   (auto-save-default t)
   (bookmark-file (expand-file-name "cache/bookmarks" user-emacs-directory))
@@ -608,17 +609,17 @@
 
   (with-current-buffer (get-buffer-create "*scratch*")
     (insert (format ";;
-    ;; ███████╗███╗   ███╗ █████╗  ██████╗███████╗    ███████╗ ██████╗ ██╗      ██████╗
-    ;; ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝    ██╔════╝██╔═══██╗██║     ██╔═══██╗
-    ;; █████╗  ██╔████╔██║███████║██║     ███████╗    ███████╗██║   ██║██║     ██║   ██║
-    ;; ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║    ╚════██║██║   ██║██║     ██║   ██║
-    ;; ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║    ███████║╚██████╔╝███████╗╚██████╔╝
-    ;; ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝
-    ;;
-    ;;   Loading time : %s
-    ;;   Packages     : %s
-    ;;
-    "
+;; ███████╗███╗   ███╗ █████╗  ██████╗███████╗    ███████╗ ██████╗ ██╗      ██████╗
+;; ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝    ██╔════╝██╔═══██╗██║     ██╔═══██╗
+;; █████╗  ██╔████╔██║███████║██║     ███████╗    ███████╗██║   ██║██║     ██║   ██║
+;; ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║    ╚════██║██║   ██║██║     ██║   ██║
+;; ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║    ███████║╚██████╔╝███████╗╚██████╔╝
+;; ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝
+;;
+;;   Loading time : %s
+;;   Packages     : %s
+;;
+"
                     (emacs-init-time)
                     (number-to-string (length package-activated-list)))))
 
@@ -3327,12 +3328,17 @@
 ;;  https://lists.gnu.org/archive/html/emacs-devel/2025-02/msg00810.html
 (use-package markdown-ts-mode
   :ensure nil
-  :mode "\\.md\\'"
-  :defer t
+  :mode ("\\.md\\'" . markdown-ts-mode)
+  :defer 't
   :config
-  ;; (add-to-list 'major-mode-remap-alist '(markdown-mode . markdown-ts-mode))
-  (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))  ;; EMACS-31 this is now defined on mode code
-  (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))  ;; EMACS-31 this is now defined on mode code
+  (require 'markdown-mode)
+  (set-keymap-parent markdown-ts-mode-map markdown-mode-map)
+  (setq markdown-command "pandoc")
+  (setq markdown-enable-math t)
+  (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-\sitter-markdown/" "v0.4.1" "tree-sitter-markdown/src"))
+  (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown/" "v0.4.1" "tree-sitter-markdown-inline/src"))
+  (add-hook 'markdown-ts-mode-hook
+          (lambda () (setq-local indent-tabs-mode nil))))
 
 
 ;;; │ YAML-TS-MODE
@@ -3440,6 +3446,7 @@
 (require 'init-eshell)
 (require 'init-avy)
 (require 'init-corfu)
+(require 'init-orderless)
 (require 'init-eglot-java)
 (provide 'init)
 ;;; └ init.el ends here
