@@ -5,7 +5,7 @@
         "/home/ronghusong/software/opensoft/jdtls")
 
   (defun custom-eglot-java-init-opts (server eglot-java-eclipse-jdt)
-    "自定义 JDTLS 设置，包括 Google Style 格式化。"
+    "custom JDTLS settings，include Google Style format。"
     '(:settings
       (:java
        (:format

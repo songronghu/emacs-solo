@@ -1,10 +1,10 @@
 (use-package consult
  :bind (
-       ;; 替代 isearch
+       ;; replace isearch
        ("C-s" . consult-line)
 
-       ;; 全局搜索
-       ("C-c s" . consult-ripgrep)
+       ;; search in git repo
+       ("M-s g" . consult-ripgrep)
 
        ("C-c f" . grep-findq)
        ("C-x b" . consult-buffer)
