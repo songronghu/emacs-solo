@@ -1,7 +1,7 @@
 (use-package format-all
   :commands (format-all-mode format-all-buffer)
   :hook (prog-mode . format-all-mode)
-  :bind (("M-F" . format-all-buffer))
+  :bind (("M-g f" . format-all-buffer))
   :config
   (setq-default format-all-formatters
                 '(("C"     (astyle "--mode=c"))

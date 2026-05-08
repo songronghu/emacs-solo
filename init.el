@@ -3208,7 +3208,7 @@
   :custom
   (js-indent-level 2)
   :config
-  (add-to-list 'treesit-language-source-alist '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+  (add-to-list 'treesit-language-source-alist '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "v0.23.1" "src"))
   (add-to-list 'treesit-language-source-alist '(jsdoc "https://github.com/tree-sitter/tree-sitter-jsdoc" "master" "src")))
 
 ;;; │ JSON-TS-MODE
@@ -3335,7 +3335,7 @@
   (set-keymap-parent markdown-ts-mode-map markdown-mode-map)
   (setq markdown-command "pandoc")
   (setq markdown-enable-math t)
-  (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-\sitter-markdown/" "v0.4.1" "tree-sitter-markdown/src"))
+  (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown/" "v0.4.1" "tree-sitter-markdown/src"))
   (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown/" "v0.4.1" "tree-sitter-markdown-inline/src"))
   (add-hook 'markdown-ts-mode-hook
           (lambda () (setq-local indent-tabs-mode nil))))
@@ -3390,11 +3390,16 @@
       '((tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
         (java "https://github.com/tree-sitter/tree-sitter-java" "master" "src")
-        (javascript "https://github.com/tree-sitter/tree-sitter-javascript")))
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "v0.23.1" "src")))
 
 (require 'server)
+
 (unless (server-running-p)
   (server-start))
+
+(setenv "http_proxy"  "http://127.0.0.1:18080")
+(setenv "https_proxy" "http://127.0.0.1:18080")
+;; (setq eca-custom-command '( "clojure" "-J-Dhttps.proxyHost=127.0.0.1" "-J-Dhttps.proxyPort=18080" "-Sdeps" "{:paths [\"src\" \"resources\"]}" "-M" "-m" "eca.main" "server"))
 
 (require 'emacs-solo-themes)
 (require 'emacs-solo-movements)
@@ -3448,5 +3453,7 @@
 (require 'init-corfu)
 (require 'init-orderless)
 (require 'init-eglot-java)
+(require 'init-eca)
+(require 'init-translate)
 (provide 'init)
 ;;; └ init.el ends here
