@@ -140,7 +140,7 @@ This provides better rendering for the CLI's rich text user interface."
                                    (term-send-string proc "\r")))))
                            proc-buffer initial-input)))))))
 
-    (global-set-key (kbd "C-c C-0") #'emacs-solo/claude-chat))
+    (global-set-key (kbd "C-c C-0") #'emacs-solo/gemini-chat))
 
 (provide 'emacs-solo-ai)
 ;;; emacs-solo-ai.el ends here

@@ -1,4 +1,11 @@
+(use-package project
+  :straight (:type built-in))
+
+(use-package eglot
+  :straight (:type built-in))
+
 (use-package eglot-java
+  :straight (eglot-java :host github :repo "yveszoundi/eglot-java")
   :ensure nil
   :init
   (setq eglot-java-server-install-dir

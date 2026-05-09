@@ -1,5 +1,5 @@
 (use-package eca
-  :ensure nil
-  :init)
+  :straight (eca :host github :repo "editor-code-assistant/eca-emacs")
+  :after transient)
 
 (provide 'init-eca)

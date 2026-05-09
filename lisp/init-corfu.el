@@ -1,7 +1,7 @@
 (use-package corfu
-  :ensure nil
+  :straight (corfu :host github :repo "minad/corfu")
   :custom
-  ; Hi-lock: (("insert" . 'hi-yellow))
+                                        ; Hi-lock: (("insert" . 'hi-yellow))
   ;; allow cycle select
   (corfu-cycle t)
   ;; only one candidate word, auto insert

@@ -33,6 +33,8 @@ If reset values are nil, nothing is reset."
   :group 'emacs-solo)
 
 
+(setq package-enable-at-startup nil)
+
 ;;; -------------------- PERFORMANCE & HACKS
 ;; HACK: inscrease startup speed
 

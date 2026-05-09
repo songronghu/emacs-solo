@@ -1,4 +1,5 @@
 (use-package multiple-cursors
+  :straight (multiple-cursors :host github :repo "magnars/multiple-cursors.el")
   :commands (mc/edit-lines
              mc/edit-ends-of-lines
              mc/edit-beginnings-of-lines

@@ -1,4 +1,5 @@
 (use-package fingertip
+  :straight (fingertip :host github :repo "manateelazycat/fingertip")
   :hook ((c-mode-common . fingertip-mode)
          (c-mode-common-hook . fingertip-mode)
          (c-mode-hook . fingertip-mode)

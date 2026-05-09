@@ -1,4 +1,5 @@
-;; init.el --- Emacs Solo (no external packages) Configuration --- Init  -*- lexical-binding: t; byte-compile-warnings: (not free-vars unresolved make-local); -*-
+;;; init.el --- Emacs Solo (no external packages) Configuration --- Init  -*- lexical-binding: t; byte-compile-warnings: (not free-vars unresolved make-local); -*-
+
 ;;
 ;; Author: Rahul Martim Juliato
 ;; URL: https://github.com/LionyxML/emacs-solo
@@ -52,6 +53,29 @@
 ;;; ┌──────────────────── EMACS SOLO CUSTOM OPTIONS
 ;;
 ;;  Some features Emacs Solo provides you can turn on/off
+;; init straight config
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el"
+                         (or (bound-and-true-p straight-base-dir)
+                             user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;; 批量声明 Emacs 30 内置包，防止 straight 画蛇添足导致版本冲突
+(dolist (pkg '(use-package bind-key seq eldoc flymake jsonrpc xref external-completion project eglot map))
+  (straight-use-package `(,pkg :type built-in)))
+;; install and init use-package
+(straight-use-package 'use-package)
+(straight-use-package 'transient)
+
 (defcustom emacs-solo-enable-outline-init t
   "Enable init.el starting all collapsed."
   :type 'boolean
@@ -65,17 +89,17 @@
 (defcustom emacs-solo-icon-modules
   '(dired eshell ibuffer)
   "List of Emacs Solo icon modules to enable.
-    Controls which modules display file type icons.
+Controls which modules display file type icons.
 
-    Valid values (combine in a list):
-    - \\='dired: Show file type icons in Dired buffers
-    - \\='eshell: Show file type icons in Eshell prompts
-    - \\='ibuffer: Show buffer type icons in Ibuffer
-    - \\='nerd: Prefer Nerd Font glyphs over Emojis
-    - nil: Disable all icons
+Valid values (combine in a list):
+- \\='dired: Show file type icons in Dired buffers
+- \\='eshell: Show file type icons in Eshell prompts
+- \\='ibuffer: Show buffer type icons in Ibuffer
+- \\='nerd: Prefer Nerd Font glyphs over Emojis
+- nil: Disable all icons
 
-    Default is \\='(dired eshell ibuffer), which uses Emoji icons.
-    Add \\='nerd to the list to use Nerd Font glyphs instead."
+Default is \\='(dired eshell ibuffer), which uses Emoji icons.
+Add \\='nerd to the list to use Nerd Font glyphs instead."
   :type '(set :tag "Emacs Solo icon modules"
               (const :tag "Use icons on Dired" dired)
               (const :tag "Use icons on Eshell" eshell)
@@ -167,9 +191,9 @@
 
 (defcustom emacs-solo-enable-auto-formatter t
   "Whether to automatically enable format-on-save for files.
-    Respects the `emacs-solo-formatter-alist'.  When non-nil, opening a file whose
-    extension has a registered formatter will add format-on-save to the
-    buffer's `after-save-hook'."
+Respects `emacs-solo-formatter-alist'. When non-nil, opening a file
+whose extension has a registered formatter will add format-on-save to
+the buffer's `after-save-hook'."
   :type 'boolean
   :group 'emacs-solo)
 
@@ -3369,7 +3393,7 @@
     (setq-local go-ts-mode-indent-offset tab-width)))
 
 (use-package go-ts-mode
-  :ensure t
+  :ensure nil
   :mode ("\\.go\\'" . go-ts-mode)
   :mode ("go\\.mod\\'" . go-mod-ts-mode)
   :hook
@@ -3441,13 +3465,12 @@
 (require 'init-eaf-config)
 (require 'init-fingertip)
 (require 'init-sort-tab)
-(require 'init-vi-navigate)
 (require 'init-expand-region)
 (require 'init-toggle-one-window)
 (require 'init-consult)
 (require 'init-yasnippet)
 (require 'init-multiple-cursor)
-(require 'init-format-all)
+(require 'init-format)
 (require 'init-eshell)
 (require 'init-avy)
 (require 'init-corfu)
@@ -3455,5 +3478,6 @@
 (require 'init-eglot-java)
 (require 'init-eca)
 (require 'init-translate)
+(require 'init-cider)
 (provide 'init)
-;;; └ init.el ends here
+;;; init.el ends here

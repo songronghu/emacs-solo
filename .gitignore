@@ -73,3 +73,5 @@ multisession/
 tmp/
 eaf/*
 eglot-java-eclipse-jdt-cache/*
+straight/*
+AGENTS.md
