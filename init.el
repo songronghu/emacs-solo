@@ -431,6 +431,14 @@ the buffer's `after-save-hook'."
   (add-hook 'prog-mode-hook #'display-line-numbers-mode)
   (add-hook 'text-mode-hook #'display-line-numbers-mode)
 
+  ;; When entering or exiting read-only mode, toggle View Mode automatically
+  (defun emacs-solo/toggle-view-mode-on-readonly ()
+    "Toggle view-mode according to the buffer's read-only state."
+    (if buffer-read-only
+        (view-mode 1)
+      (view-mode -1)))
+  (add-hook 'read-only-mode-hook #'emacs-solo/toggle-view-mode-on-readonly)
+
   ;; Starts `completion-preview-mode' automatically in some modes
   (add-hook 'prog-mode-hook #'completion-preview-mode)
   (add-hook 'text-mode-hook #'completion-preview-mode)

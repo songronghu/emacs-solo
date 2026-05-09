@@ -9,7 +9,7 @@
         (list :background-color "#333333"
               :foreground-color "#dcdccc"
               :font "WenQuanYi Micro Hei Mono-14"
-              :internal-border-width 10))
+              :internal-border-width 1))
   :config
   (define-key rime-active-mode-map (kbd "M-o") #'rime--backspace)
   (define-key rime-active-mode-map (kbd "M-m") #'rime--return)
