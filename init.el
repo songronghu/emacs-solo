@@ -440,10 +440,10 @@ the buffer's `after-save-hook'."
   (add-hook 'read-only-mode-hook #'emacs-solo/toggle-view-mode-on-readonly)
 
   ;; Starts `completion-preview-mode' automatically in some modes
-  (add-hook 'prog-mode-hook #'completion-preview-mode)
-  (add-hook 'text-mode-hook #'completion-preview-mode)
-  (add-hook 'rcirc-mode-hook #'completion-preview-mode)
-  (add-hook 'erc-mode-hook #'completion-preview-mode)
+  ;; (add-hook 'prog-mode-hook #'completion-preview-mode)
+  ;; (add-hook 'text-mode-hook #'completion-preview-mode)
+  ;; (add-hook 'rcirc-mode-hook #'completion-preview-mode)
+  ;; (add-hook 'erc-mode-hook #'completion-preview-mode)
 
   ;; A Protesilaos life savier HACK
   ;; Add option "d" to whenever using C-x s or C-x C-c, allowing a quick preview
@@ -805,6 +805,12 @@ the buffer's `after-save-hook'."
   (auto-revert-avoid-polling t)
   (global-auto-revert-non-file-buffers t))
 
+;;; │ VIPER
+(use-package viper
+  :ensure nil
+  :defer t
+  :bind
+  ("C-c v" . toggle-viper-mode))
 
 ;;; │ CONF
 (use-package conf-mode
@@ -988,7 +994,7 @@ the buffer's `after-save-hook'."
   (setq icomplete-prospects-height 10)
   (setq icomplete-separator " . ")
   (setq icomplete-with-completion-tables t)
-  (setq icomplete-in-buffer t)
+  (setq icomplete-in-buffer nil)
   (setq icomplete-max-delay-chars 0)
   (setq icomplete-scroll t)
 
@@ -1002,9 +1008,9 @@ the buffer's `after-save-hook'."
     ;; (setq icomplete-vertical-unselected-prefix-indicator "   ")
     )
 
-  (if icomplete-in-buffer
-      (advice-add 'completion-at-point
-                  :after #'minibuffer-hide-completions))
+  ;; (if icomplete-in-buffer
+  ;;     (advice-add 'completion-at-point
+  ;;                 :after #'minibuffer-hide-completions))
 
   ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2025-03/msg02638.html
   ;;

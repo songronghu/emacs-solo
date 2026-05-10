@@ -1,5 +1,5 @@
 (use-package corfu
-  :straight (corfu :host github :repo "minad/corfu")
+  :straight (corfu :host github :repo "minad/corfu") 
   :custom
   ;; Hi-lock: (("insert" . 'hi-yellow))
   ;; allow cycle select
@@ -25,7 +25,7 @@
   (require 'corfu-popupinfo)
   ;; show doc floating window
   (corfu-popupinfo-mode 1)
-  (setq corfu-popupinfo-delay 0.5)
+  (setq corfu-popupinfo-delay 5)
   (setq corfu-count 15)
 
   ;; Insert directly after entering the prefix parameter
