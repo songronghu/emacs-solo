@@ -189,7 +189,7 @@ speed and independent command history.。"
       ;; 1. Determine whether they are consecutive in the same direction (eq current-cmd my-viper-last-accel-cmd)
       ;; 2. The time difference is relaxed to 0.35 seconds, which is enough to cover the initial delay of human manual double press and system long press
       (if (and (eq current-cmd my-viper-last-accel-cmd)
-               (< delta 0.35))
+               (< delta 0.55))
           (setq my-viper-scroll-count (min (+ my-viper-scroll-count 1) 8))
         ;; If direction changes or pauses for too long, reset to 1.
         (setq my-viper-scroll-count 1))
@@ -218,6 +218,26 @@ speed and independent command history.。"
           (viper-previous-line arg))
       ;; pass 'k to get the number of acceleration steps.
       (viper-previous-line (my-viper--accelerated-step 'k))))
+
+  (defun my-viper-h (&optional arg)
+    "Viper move left，Supports prefix parameters and continuous key acceleration。"
+    (interactive "p")
+    (if current-prefix-arg
+        (progn
+          (setq my-viper-last-accel-cmd nil)
+          (viper-backward-char arg))
+      ;; pass 'h to get the number of acceleration steps.
+      (viper-backward-char (my-viper--accelerated-step 'h))))
+
+  (defun my-viper-l (&optional arg)
+    "Viper move right，Supports prefix parameters and continuous key acceleration。"
+    (interactive "p")
+    (if current-prefix-arg
+        (progn
+          (setq my-viper-last-accel-cmd nil)
+          (viper-forward-char arg))
+      ;; pass 'l to get the number of acceleration steps.
+      (viper-forward-char (my-viper--accelerated-step 'l))))
 
   ;; Delete inside delimiters
   (define-key viper-vi-global-user-map (kbd "di(") (lambda () (interactive) (viper-delete-inside-delimiters ?\( ?\))))
@@ -306,12 +326,18 @@ speed and independent command history.。"
   ;; j, k
   (define-key viper-vi-global-user-map (kbd "j") #'my-viper-j)
   (define-key viper-vi-global-user-map (kbd "k") #'my-viper-k)
+  (define-key viper-vi-global-user-map (kbd "h") #'my-viper-h)
+  (define-key viper-vi-global-user-map (kbd "l") #'my-viper-l)
 
   ;; block-nav
   (define-key viper-vi-global-user-map (kbd "J")  'block-nav-next-block)
   (define-key viper-vi-global-user-map (kbd "K")  'block-nav-previous-block)
   (define-key viper-vi-global-user-map (kbd "H")  'block-nav-previous-indentation-level)
-  (define-key viper-vi-global-user-map (kbd "L")  'block-nav-next-indentation-level))
+  (define-key viper-vi-global-user-map (kbd "L")  'block-nav-next-indentation-level)
+
+  ;; --- Insert Mode Extensions ---
+  ;; Use C-g to exit insert state (standard Emacs way, much closer than Esc)
+ (define-key viper-insert-global-user-map (kbd "C-g") 'viper-exit-insert-state))
 
 (provide 'emacs-solo-viper-extensions)
 ;;; emacs-solo-viper-extensions.el ends here
