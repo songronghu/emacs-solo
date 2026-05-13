@@ -173,6 +173,50 @@ A compound word includes letters, numbers, `-`, and `_`."
     (interactive)
     (delete-other-windows))
 
+  (defvar my-viper-scroll-count 1
+    "当前加速滚动的步数。")
+  (defvar my-viper-last-command-time 0.0
+    "上一次执行加速移动命令的时间。")
+  (defvar my-viper-last-accel-cmd nil
+    "独立记录上一次的移动方向，避免被 Viper 底层拦截。")
+
+  (defun my-viper--accelerated-step (current-cmd)
+    "根据连续按键速度和独立的命令历史，动态计算滚动步数。"
+    (let* ((now (float-time))
+           (delta (- now my-viper-last-command-time)))
+      ;; 1. 判断是否是连续相同的方向 (eq current-cmd my-viper-last-accel-cmd)
+      ;; 2. 时间差放宽到 0.35 秒，足以覆盖人类手动连按和系统长按的初始延迟
+      (if (and (eq current-cmd my-viper-last-accel-cmd)
+               (< delta 0.35))
+          (setq my-viper-scroll-count (min (+ my-viper-scroll-count 1) 8))
+        ;; 如果方向改变或停顿过久，重置为 1
+        (setq my-viper-scroll-count 1))
+      ;; 更新状态记录
+      (setq my-viper-last-command-time now)
+      (setq my-viper-last-accel-cmd current-cmd)
+      my-viper-scroll-count))
+
+  (defun my-viper-j (&optional arg)
+    "Viper 向下移动，支持前缀参数和连续按键加速。"
+    (interactive "p")
+    (if current-prefix-arg
+        (progn
+          ;; 如果使用了数字前缀（如 5j），主动清空我们的加速池记录
+          (setq my-viper-last-accel-cmd nil)
+          (viper-next-line arg))
+      ;; 传入标识符 'j 来获取加速步数
+      (viper-next-line (my-viper--accelerated-step 'j))))
+
+  (defun my-viper-k (&optional arg)
+    "Viper 向上移动，支持前缀参数和连续按键加速。"
+    (interactive "p")
+    (if current-prefix-arg
+        (progn
+          (setq my-viper-last-accel-cmd nil)
+          (viper-previous-line arg))
+      ;; 传入标识符 'k 来获取加速步数
+      (viper-previous-line (my-viper--accelerated-step 'k))))
+
   ;; Delete inside delimiters
   (define-key viper-vi-global-user-map (kbd "di(") (lambda () (interactive) (viper-delete-inside-delimiters ?\( ?\))))
   (define-key viper-vi-global-user-map (kbd "dib") (lambda () (interactive) (viper-delete-inside-delimiters ?\( ?\))))
@@ -239,7 +283,7 @@ A compound word includes letters, numbers, `-`, and `_`."
   ;; Keybindings for buffer navigation and switching in Viper mode
   (define-key viper-vi-global-user-map (kbd "] b") 'next-buffer)
   (define-key viper-vi-global-user-map (kbd "[ b") 'previous-buffer)
-  (define-key viper-vi-global-user-map (kbd "b l") 'switch-to-buffer)
+  ;;(define-key viper-vi-global-user-map (kbd "b l") 'switch-to-buffer)
   (define-key viper-vi-global-user-map (kbd "SPC SPC") 'switch-to-buffer)
 
   ;; Tabs (like in tmux tabs, not vscode tabs)
@@ -255,7 +299,19 @@ A compound word includes letters, numbers, `-`, and `_`."
 
   ;; Gutter
   (define-key viper-vi-global-user-map (kbd "] c") 'emacs-solo/goto-next-hunk)
-  (define-key viper-vi-global-user-map (kbd "[ c") 'emacs-solo/goto-previous-hunk))
+  (define-key viper-vi-global-user-map (kbd "[ c") 'emacs-solo/goto-previous-hunk)
+
+  ;; j, k
+  (define-key viper-vi-global-user-map (kbd "j") #'my-viper-j)
+  (define-key viper-vi-global-user-map (kbd "k") #'my-viper-k)
+  (define-key viper-vi-global-user-map (kbd "j") #'my-viper-j)
+  (define-key viper-vi-global-user-map (kbd "k") #'my-viper-k)
+
+  ;; block-nav
+  (define-key viper-vi-global-user-map (kbd "J")  'block-nav-next-block)
+  (define-key viper-vi-global-user-map (kbd "K")  'block-nav-previous-block)
+  (define-key viper-vi-global-user-map (kbd "H")  'block-nav-previous-indentation-level)
+  (define-key viper-vi-global-user-map (kbd "L")  'block-nav-next-indentation-level))
 
 (provide 'emacs-solo-viper-extensions)
 ;;; emacs-solo-viper-extensions.el ends here

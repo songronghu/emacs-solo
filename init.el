@@ -810,7 +810,7 @@ the buffer's `after-save-hook'."
   :ensure nil
   :defer t
   :bind
-  ("C-c v" . toggle-viper-mode))
+  ("M-i" . toggle-viper-mode))
 
 ;;; │ CONF
 (use-package conf-mode
@@ -1248,7 +1248,7 @@ the buffer's `after-save-hook'."
 (use-package dired
   :ensure nil
   :bind
-  (("M-i" . emacs-solo/window-dired-vc-root-left))
+  ;;(("M-i" . emacs-solo/window-dired-vc-root-left))
   :custom
   (dired-auto-revert-buffer t)
   (dired-dwim-target t)
