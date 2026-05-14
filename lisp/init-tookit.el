@@ -6,6 +6,7 @@
   (require 'auto-save)
   (auto-save-enable)
   (require 'subword)
+  (require 'automagic-dark-mode)
   (defun open-newline-above (arg)
     "Move to the previous line (like vi) and then opens a line."
     (interactive "p")
@@ -118,7 +119,7 @@
   arg lines up."
     (interactive "*p")
     (move-text-internal (- arg)))
-
+  (global-set-key (kbd "C-c b") 'automagic-dark-mode)
   (global-set-key (kbd "C-M-y") #'up-list)
   (global-set-key (kbd "s-P") #'move-text-up)
   (global-set-key (kbd "s-N") #'move-text-down)

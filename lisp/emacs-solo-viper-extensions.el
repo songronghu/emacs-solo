@@ -173,72 +173,6 @@ A compound word includes letters, numbers, `-`, and `_`."
     (interactive)
     (delete-other-windows))
 
-  (defvar my-viper-scroll-count 1
-    "Current number of accelerated scrolling steps。")
-  (defvar my-viper-last-command-time 0.0
-    "The time when the acceleration movement command was last executed。")
-  (defvar my-viper-last-accel-cmd nil
-    "Independently record the last movement direction to avoid being
-intercepted by the bottom layer of Viper。")
-
-  (defun my-viper--accelerated-step (current-cmd)
-    "Dynamically calculate scroll steps based on consecutive keystroke
-speed and independent command history.。"
-    (let* ((now (float-time))
-           (delta (- now my-viper-last-command-time)))
-      ;; 1. Determine whether they are consecutive in the same direction (eq current-cmd my-viper-last-accel-cmd)
-      ;; 2. The time difference is relaxed to 0.35 seconds, which is enough to cover the initial delay of human manual double press and system long press
-      (if (and (eq current-cmd my-viper-last-accel-cmd)
-               (< delta 0.55))
-          (setq my-viper-scroll-count (min (+ my-viper-scroll-count 1) 8))
-        ;; If direction changes or pauses for too long, reset to 1.
-        (setq my-viper-scroll-count 1))
-      ;; update state record
-      (setq my-viper-last-command-time now)
-      (setq my-viper-last-accel-cmd current-cmd)
-      my-viper-scroll-count))
-
-  (defun my-viper-j (&optional arg)
-    "Viper move down，Supports prefix parameters and continuous key acceleration。"
-    (interactive "p")
-    (if current-prefix-arg
-        (progn
-          ;; If a numeric prefix is ​​used（eg: 5j），Actively clear our acceleration pool records
-          (setq my-viper-last-accel-cmd nil)
-          (viper-next-line arg))
-      ;; pass 'j to get the number of acceleration steps
-      (viper-next-line (my-viper--accelerated-step 'j))))
-
-  (defun my-viper-k (&optional arg)
-    "Viper move up，Supports prefix parameters and continuous key acceleration。"
-    (interactive "p")
-    (if current-prefix-arg
-        (progn
-          (setq my-viper-last-accel-cmd nil)
-          (viper-previous-line arg))
-      ;; pass 'k to get the number of acceleration steps.
-      (viper-previous-line (my-viper--accelerated-step 'k))))
-
-  (defun my-viper-h (&optional arg)
-    "Viper move left，Supports prefix parameters and continuous key acceleration。"
-    (interactive "p")
-    (if current-prefix-arg
-        (progn
-          (setq my-viper-last-accel-cmd nil)
-          (viper-backward-char arg))
-      ;; pass 'h to get the number of acceleration steps.
-      (viper-backward-char (my-viper--accelerated-step 'h))))
-
-  (defun my-viper-l (&optional arg)
-    "Viper move right，Supports prefix parameters and continuous key acceleration。"
-    (interactive "p")
-    (if current-prefix-arg
-        (progn
-          (setq my-viper-last-accel-cmd nil)
-          (viper-forward-char arg))
-      ;; pass 'l to get the number of acceleration steps.
-      (viper-forward-char (my-viper--accelerated-step 'l))))
-
   ;; Delete inside delimiters
   (define-key viper-vi-global-user-map (kbd "di(") (lambda () (interactive) (viper-delete-inside-delimiters ?\( ?\))))
   (define-key viper-vi-global-user-map (kbd "dib") (lambda () (interactive) (viper-delete-inside-delimiters ?\( ?\))))
@@ -321,23 +255,7 @@ speed and independent command history.。"
 
   ;; Gutter
   (define-key viper-vi-global-user-map (kbd "] c") 'emacs-solo/goto-next-hunk)
-  (define-key viper-vi-global-user-map (kbd "[ c") 'emacs-solo/goto-previous-hunk)
-
-  ;; j, k
-  (define-key viper-vi-global-user-map (kbd "j") #'my-viper-j)
-  (define-key viper-vi-global-user-map (kbd "k") #'my-viper-k)
-  (define-key viper-vi-global-user-map (kbd "h") #'my-viper-h)
-  (define-key viper-vi-global-user-map (kbd "l") #'my-viper-l)
-
-  ;; block-nav
-  (define-key viper-vi-global-user-map (kbd "J")  'block-nav-next-block)
-  (define-key viper-vi-global-user-map (kbd "K")  'block-nav-previous-block)
-  (define-key viper-vi-global-user-map (kbd "H")  'block-nav-previous-indentation-level)
-  (define-key viper-vi-global-user-map (kbd "L")  'block-nav-next-indentation-level)
-
-  ;; --- Insert Mode Extensions ---
-  ;; Use C-g to exit insert state (standard Emacs way, much closer than Esc)
- (define-key viper-insert-global-user-map (kbd "C-g") 'viper-exit-insert-state))
+  (define-key viper-vi-global-user-map (kbd "[ c") 'emacs-solo/goto-previous-hunk))
 
 (provide 'emacs-solo-viper-extensions)
 ;;; emacs-solo-viper-extensions.el ends here

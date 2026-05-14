@@ -805,12 +805,6 @@ the buffer's `after-save-hook'."
   (auto-revert-avoid-polling t)
   (global-auto-revert-non-file-buffers t))
 
-;;; │ VIPER
-(use-package viper
-  :ensure nil
-  :defer t
-  :bind
-  ("M-i" . toggle-viper-mode))
 
 ;;; │ CONF
 (use-package conf-mode
@@ -3492,6 +3486,7 @@ the buffer's `after-save-hook'."
 (require 'init-eglot-java)
 (require 'init-eca)
 (require 'init-translate)
+(require 'init-god-mode)
 (require 'init-cider)
 (provide 'init)
 ;;; init.el ends here
